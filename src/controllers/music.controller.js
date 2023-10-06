@@ -45,6 +45,7 @@ const subirCancion = async (req, res) => {
 };
 
 const borrarCancion = async (req, res) => {
+    try{
     const { id } = req.params;
     const result = await pool.query(
     "DELETE FROM cancion WHERE idcancion = $1 RETURNING *", [id]
@@ -56,7 +57,39 @@ const borrarCancion = async (req, res) => {
         });
     }
     return res.sendStatus(204);
+    }catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message });
+    }
 };
+
+const buscarCanciones = async (req, res) => {
+    try {
+        const { busqueda, tipoBusqueda } = req.query;
+        const busquedaLimpia = busqueda.trim();
+        let listaCanciones
+        if(busquedaLimpia === ""){
+            listaCanciones = await pool.query(
+                "SELECT c.*, a.nombre AS artista FROM cancion c, usuario a WHERE idartista=idusuario"
+            );    
+        }
+        if(tipoBusqueda == "artista"){
+            listaCanciones = await pool.query(
+                "SELECT c.*, a.nombre AS artista FROM cancion c, usuario a WHERE c.idartista = a.idusuario AND (similarity(a.nombre, $1) > 0.1 OR a.nombre ILIKE '%' || $1 || '%')", [busqueda]
+            );
+        }else{
+           if(tipoBusqueda == "titulo"){
+            listaCanciones = await pool.query(
+                "SELECT c.*, a.nombre AS artista FROM cancion c, usuario a WHERE c.idartista = a.idusuario AND (similarity(c.titulo, $1) > 0.1 OR c.titulo ILIKE '%' || $1 || '%')", [busqueda]
+            ); 
+           } 
+        }
+        res.json(listaCanciones.rows);
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message });
+    }
+}
 
 const actualizarCancion = (req, res) => {
     res.send("Actualizar canción");
@@ -68,4 +101,5 @@ module.exports = {
     subirCancion,
     borrarCancion,
     actualizarCancion,
-};
+    buscarCanciones,
+}
