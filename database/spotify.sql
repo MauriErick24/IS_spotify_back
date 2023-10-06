@@ -6,6 +6,11 @@ CREATE TABLE Usuario (
   correo VARCHAR(255)
 );
 
+CREATE TABLE Artista (
+  idArtista SERIAL PRIMARY KEY,
+  nombre VARCHAR(255)
+);
+
 CREATE TABLE Album (
   idAlbum SERIAL PRIMARY KEY,
   titulo VARCHAR(255),
@@ -14,7 +19,7 @@ CREATE TABLE Album (
 
 CREATE TABLE Cancion (
   idCancion SERIAL PRIMARY KEY,
-  idArtista INTEGER REFERENCES Usuario(idUsuario),
+  idArtista INTEGER REFERENCES Artista(idArtista),
   idAlbum INTEGER REFERENCES Album(idAlbum),
   titulo VARCHAR(255),
   genero VARCHAR(255),
