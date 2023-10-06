@@ -95,6 +95,19 @@ const actualizarCancion = (req, res) => {
     res.send("Actualizar canción");
 };
 
+const agregarCancionPlaylist  = async (req, res) => {    
+    try {
+        const {idCancion, idUsuario, nomPlaylist} = req.query;
+        const result = await pool.query(
+            "INSERT INTO cancionesPlaylists (idCancion, idPlaylist) VALUES ($1, (SELECT idPlaylist FROM playlist WHERE idUsuario = $2 AND nombre = $3)) RETURNING *", [idCancion, idUsuario, nomPlaylist]
+            );
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message });
+    }
+}
+
 module.exports = {
     obtenerListaCanciones,
     obtenerCancion,
@@ -102,4 +115,5 @@ module.exports = {
     borrarCancion,
     actualizarCancion,
     buscarCanciones,
+    agregarCancionPlaylist,
 }
