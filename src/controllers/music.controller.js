@@ -112,19 +112,6 @@ const agregarCancionPlaylist  = async (req, res) => {
     }
 }
 
-const eliminarCancionPlaylist = async (req, res) => {
-    try {
-        const {idCancion, idUsuario, nomPlaylist} = req.query;
-        const result = await pool.query(
-            "DELETE FROM cancionesPlaylists WHERE idCancion = $1 AND idPlaylist = (SELECT idPlaylist FROM playlist WHERE idUsuario = $2 AND nombre = $3) RETURNING *", [idCancion, idUsuario, nomPlaylist]
-            );
-        return res.sendStatus(204);
-    } catch (error) {
-        console.log(error.message);
-        res.json({ error: error.message });
-    }
-}
-
 module.exports = {
     obtenerListaCanciones,
     obtenerCancion,
@@ -133,5 +120,4 @@ module.exports = {
     actualizarCancion,
     buscarCanciones,
     agregarCancionPlaylist,
-    eliminarCancionPlaylist,
 }
