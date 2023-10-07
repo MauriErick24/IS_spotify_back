@@ -4,7 +4,7 @@ const {obtenerListaCanciones, obtenerCancion, subirCancion, borrarCancion, actua
 const router = Router()
 
 router.get("/spotify/buscar", buscarCanciones);
-router.post("/spotify/agregarPlaylist", agregarCancionPlaylist);
+router.post("/spotify/agregarCancionPlaylist", agregarCancionPlaylist);
 router.get("/spotify", obtenerListaCanciones);
 router.get("/spotify/:id", obtenerCancion);
 router.post("/spotify", subirCancion);
